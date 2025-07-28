@@ -1,0 +1,11 @@
+name: NMLArmor
+version: '1.0'
+main: io.github.NoOne.nMLArmor.NMLArmor
+api-version: '1.21'
+depend:
+  - NMLPlayerStats
+  - NMLDefenses
+commands:
+  generateArmor:
+    description: generates a piece of armor for the player
+    usage: /<command> <type> <rarity>
