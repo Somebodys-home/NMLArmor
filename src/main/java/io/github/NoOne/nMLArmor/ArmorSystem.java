@@ -4,6 +4,8 @@ import io.github.NoOne.nMLDefenses.DefenseLore;
 import io.github.NoOne.nMLDefenses.DefenseManager;
 import io.github.NoOne.nMLDefenses.DefenseType;
 import io.github.NoOne.nMLDefenses.NMLDefenses;
+import io.github.NoOne.nMLItems.ItemRarity;
+import io.github.NoOne.nMLItems.ItemType;
 import io.github.NoOne.nMLPlayerStats.profileSystem.ProfileManager;
 import io.github.NoOne.nMLPlayerStats.statSystem.StatChangeEvent;
 import io.github.NoOne.nMLPlayerStats.statSystem.Stats;
@@ -34,14 +36,14 @@ public class ArmorSystem {
         levelKey = new NamespacedKey(nmlArmor, "level");
     }
 
-    public ItemStack generateArmor(Player receiver, ArmorRarity rarity, ArmorType type, String armorPiece, int level) {
-        ItemStack weapon = new ItemStack(ArmorType.getArmorTypeMaterial(type, armorPiece));
+    public ItemStack generateArmor(Player receiver, ItemRarity rarity, ItemType type, String armorPiece, int level) {
+        ItemStack weapon = new ItemStack(ItemType.getItemTypeMaterial(type, armorPiece));
         ItemMeta meta = weapon.getItemMeta();
         PersistentDataContainer pdc = meta.getPersistentDataContainer();
         List<String> lore = new ArrayList<>();
 
-        pdc.set(makeArmorTypeKey(type), PersistentDataType.INTEGER, 1);
-        pdc.set(makeArmorRarityKey(rarity), PersistentDataType.INTEGER, 1);
+        pdc.set(makeItemTypeKey(type), PersistentDataType.INTEGER, 1);
+        pdc.set(makeItemRarityKey(rarity), PersistentDataType.INTEGER, 1);
         pdc.set(levelKey, PersistentDataType.INTEGER, level);
         weapon.setItemMeta(meta);
 
@@ -49,7 +51,7 @@ public class ArmorSystem {
         meta.setDisplayName(name);
         pdc.set(originalNameKey, PersistentDataType.STRING, name);
 
-        lore.add(ArmorRarity.getArmorRarityColor(rarity) + "" + ChatColor.BOLD + ArmorRarity.getArmorRarityString(rarity).toUpperCase() + " " + ArmorType.getArmorTypeString(type).toUpperCase() + " " + armorPiece.toUpperCase());
+        lore.add(ItemRarity.getItemRarityColor(rarity) + "" + ChatColor.BOLD + ItemRarity.getItemRarityString(rarity).toUpperCase() + " " + ItemType.getItemTypeString(type).toUpperCase() + " " + armorPiece.toUpperCase());
         lore.add("");
         meta.setLore(lore);
         weapon.setItemMeta(meta);
@@ -60,18 +62,18 @@ public class ArmorSystem {
         return weapon;
     }
 
-    public String generateArmorName(ArmorRarity rarity, ArmorType type, String armorPiece, int level) {
+    public String generateArmorName(ItemRarity rarity, ItemType type, String armorPiece, int level) {
         String[] nameSegments = null;
         String name = "";
 
-        if (rarity == ArmorRarity.COMMON) {
+        if (rarity == ItemRarity.COMMON) {
 
             nameSegments = new String[2];
             List<String> badAdjectives = new ArrayList<>(List.of("Garbage", "Awful", "Do Better", "Babies' First", "Oh God That", "Rotten", "Poor", "Degrading", "Forgotten", "Racist"));
 
             nameSegments[0] = badAdjectives.get(ThreadLocalRandom.current().nextInt(badAdjectives.size()));
 
-        } else if (rarity == ArmorRarity.UNCOMMON) {
+        } else if (rarity == ItemRarity.UNCOMMON) {
 
             nameSegments = new String[2];
             List<String> goodAdjectives = new ArrayList<>(List.of("Pretty Alright", "Hand-me-downed", "Based", "W", "Neato Dorito", "Goofy Ahh", "Nobodies'"));
@@ -79,7 +81,7 @@ public class ArmorSystem {
 
             nameSegments[0] = goodAdjectives.get(randomAdjective);
 
-        } else if (rarity == ArmorRarity.RARE) {
+        } else if (rarity == ItemRarity.RARE) {
 
             nameSegments = new String[3];
             List<String> goodAdjectives = new ArrayList<>(List.of("Pretty Alright", "Solid", "Well-Made", "Lifelong", "Based", "W", "Almost Mythical", "Neato Dorito", "Goofy Ahh", "Nobodies'"));
@@ -89,7 +91,7 @@ public class ArmorSystem {
             goodAdjectives.remove(randomAdjective);
             nameSegments[1] = goodAdjectives.get(ThreadLocalRandom.current().nextInt(goodAdjectives.size()));
 
-        } else if (rarity == ArmorRarity.MYTHICAL) {
+        } else if (rarity == ItemRarity.MYTHICAL) {
 
             nameSegments = new String[3];
             List<String> greatAdjectives = new ArrayList<>(List.of("Amazing", "Godly", "King's", "Fabled", "Based", "W", "Legendary", "Goofy Ahh", "Nobodies'"));
@@ -102,7 +104,7 @@ public class ArmorSystem {
         }
 
         assert nameSegments != null;
-        if (type == ArmorType.LIGHT) {
+        if (type == ItemType.LIGHT) {
             if (Objects.equals(armorPiece, "helmet")) {
                 List<String> sword = new ArrayList<>(List.of("Cap"));
                 nameSegments[nameSegments.length - 1] = sword.get(ThreadLocalRandom.current().nextInt(sword.size()));
@@ -110,13 +112,13 @@ public class ArmorSystem {
                 List<String> sword = new ArrayList<>(List.of("Shirt"));
                 nameSegments[nameSegments.length - 1] = sword.get(ThreadLocalRandom.current().nextInt(sword.size()));
             } else if (Objects.equals(armorPiece, "leggings")) {
-                List<String> sword = new ArrayList<>(List.of("Pants"));
+                List<String> sword = new ArrayList<>(List.of("Pants", "GYATT"));
                 nameSegments[nameSegments.length - 1] = sword.get(ThreadLocalRandom.current().nextInt(sword.size()));
             } else if (Objects.equals(armorPiece, "boots")) {
                 List<String> sword = new ArrayList<>(List.of("Shoes"));
                 nameSegments[nameSegments.length - 1] = sword.get(ThreadLocalRandom.current().nextInt(sword.size()));
             }
-        } else if (type == ArmorType.MEDIUM) {
+        } else if (type == ItemType.MEDIUM) {
             if (Objects.equals(armorPiece, "helmet")) {
                 List<String> sword = new ArrayList<>(List.of("Coif", "Aventail"));
                 nameSegments[nameSegments.length - 1] = sword.get(ThreadLocalRandom.current().nextInt(sword.size()));
@@ -124,13 +126,13 @@ public class ArmorSystem {
                 List<String> sword = new ArrayList<>(List.of("Hauberk"));
                 nameSegments[nameSegments.length - 1] = sword.get(ThreadLocalRandom.current().nextInt(sword.size()));
             } else if (Objects.equals(armorPiece, "leggings")) {
-                List<String> sword = new ArrayList<>(List.of("Chausses"));
+                List<String> sword = new ArrayList<>(List.of("Chausses", "GYATT"));
                 nameSegments[nameSegments.length - 1] = sword.get(ThreadLocalRandom.current().nextInt(sword.size()));
             } else if (Objects.equals(armorPiece, "boots")) {
                 List<String> sword = new ArrayList<>(List.of("Paleos"));
                 nameSegments[nameSegments.length - 1] = sword.get(ThreadLocalRandom.current().nextInt(sword.size()));
             }
-        } else if (type == ArmorType.HEAVY) {
+        } else if (type == ItemType.HEAVY) {
             if (Objects.equals(armorPiece, "helmet")) {
                 List<String> sword = new ArrayList<>(List.of("Helmet"));
                 nameSegments[nameSegments.length - 1] = sword.get(ThreadLocalRandom.current().nextInt(sword.size()));
@@ -138,7 +140,7 @@ public class ArmorSystem {
                 List<String> sword = new ArrayList<>(List.of("Chestplate"));
                 nameSegments[nameSegments.length - 1] = sword.get(ThreadLocalRandom.current().nextInt(sword.size()));
             } else if (Objects.equals(armorPiece, "leggings")) {
-                List<String> sword = new ArrayList<>(List.of("Chausses"));
+                List<String> sword = new ArrayList<>(List.of("Chausses", "GYATT"));
                 nameSegments[nameSegments.length - 1] = sword.get(ThreadLocalRandom.current().nextInt(sword.size()));
             } else if (Objects.equals(armorPiece, "boots")) {
                 List<String> sword = new ArrayList<>(List.of("Boots"));
@@ -146,7 +148,7 @@ public class ArmorSystem {
             }
         }
 
-        name += "§o§fLv. " + level + "§r " + ArmorRarity.getArmorRarityColor(rarity);
+        name += "§o§fLv. " + level + "§r " + ItemRarity.getItemRarityColor(rarity);
         for (int i = 0; i < nameSegments.length; i++) {
             if (i == nameSegments.length - 1) {
                 name += nameSegments[i];
@@ -158,7 +160,7 @@ public class ArmorSystem {
         return name;
     }
 
-    public void generateArmorStats(ItemStack armor, ArmorType type, ArmorRarity rarity, int level) {
+    public void generateArmorStats(ItemStack armor, ItemType type, ItemRarity rarity, int level) {
         List<DefenseType> possibleFirstDefenseTypes = null;
         List<DefenseType> possibleSecondDefenseTypes = null;
 
@@ -259,9 +261,9 @@ public class ArmorSystem {
         }
     }
 
-    public void updateUnusableArmorName(ItemStack weapon, boolean unusable) {
-        ItemMeta meta = weapon.getItemMeta();
-        String originalName = getOriginalItemName(weapon);
+    public void updateUnusableArmorName(ItemStack armor, boolean unusable) {
+        ItemMeta meta = armor.getItemMeta();
+        String originalName = getOriginalItemName(armor);
         String editedName;
 
         if (!unusable) {
@@ -272,13 +274,13 @@ public class ArmorSystem {
         }
 
         meta.setDisplayName(editedName);
-        weapon.setItemMeta(meta);
+        armor.setItemMeta(meta);
     }
 
-    public boolean isArmorUsable(ItemStack weapon, Player player) {
-        if (weapon == null || !weapon.hasItemMeta()) return false;
+    public boolean isArmorUsable(ItemStack armor, Player player) {
+        if (armor == null || !armor.hasItemMeta()) return false;
 
-        ItemMeta meta = weapon.getItemMeta();
+        ItemMeta meta = armor.getItemMeta();
         PersistentDataContainer pdc = meta.getPersistentDataContainer();
         Integer itemLevel = pdc.get(levelKey, PersistentDataType.INTEGER);
 
@@ -288,31 +290,31 @@ public class ArmorSystem {
         return playerLevel >= itemLevel;
     }
 
-    public NamespacedKey makeArmorTypeKey(ArmorType type) {
-        return new NamespacedKey(nmlArmor, ArmorType.getArmorTypeString(type));
+    public NamespacedKey makeItemTypeKey(ItemType type) {
+        return new NamespacedKey(nmlArmor, ItemType.getItemTypeString(type));
     }
 
-    public ArmorType getArmorType(ItemStack armor) {
+    public ItemType getItemType(ItemStack armor) {
         ItemMeta meta = armor.getItemMeta();
         PersistentDataContainer pdc = meta.getPersistentDataContainer();
 
-        for (ArmorType type : ArmorType.values()) {
-            if (pdc.has(makeArmorTypeKey(type), PersistentDataType.INTEGER)) return type;
+        for (ItemType type : ItemType.values()) {
+            if (pdc.has(makeItemTypeKey(type), PersistentDataType.INTEGER)) return type;
         }
 
         return null;
     }
 
-    public NamespacedKey makeArmorRarityKey(ArmorRarity rarity) {
-        return new NamespacedKey(nmlArmor, ArmorRarity.getArmorRarityString(rarity));
+    public NamespacedKey makeItemRarityKey(ItemRarity rarity) {
+        return new NamespacedKey(nmlArmor, ItemRarity.getItemRarityString(rarity));
     }
 
-    public ArmorRarity getArmorRarity(ItemStack armor) {
+    public ItemRarity getItemRarity(ItemStack armor) {
         ItemMeta meta = armor.getItemMeta();
         PersistentDataContainer pdc = meta.getPersistentDataContainer();
 
-        for (ArmorRarity rarity : ArmorRarity.values()) {
-            if (pdc.has(makeArmorRarityKey(rarity), PersistentDataType.INTEGER)) return rarity;
+        for (ItemRarity rarity : ItemRarity.values()) {
+            if (pdc.has(makeItemRarityKey(rarity), PersistentDataType.INTEGER)) return rarity;
         }
 
         return null;
@@ -333,7 +335,7 @@ public class ArmorSystem {
     public boolean isACustomArmorPiece(ItemStack item) {
         if (item == null || item.getType() == Material.AIR) return false;
         if (!item.hasItemMeta()) { return false; }
-        if (getArmorType(item) == null) { return false; }
+        if (getItemType(item) == null) { return false; }
 
         return true;
     }

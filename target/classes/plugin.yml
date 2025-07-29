@@ -5,6 +5,7 @@ api-version: '1.21'
 depend:
   - NMLPlayerStats
   - NMLDefenses
+  - NMLItems
 commands:
   generateArmor:
     description: generates a piece of armor for the player

@@ -32,7 +32,7 @@ public class ArmorListener implements Listener {
 
         if (heldItem == null || heldItem.getType() == Material.AIR) { return; }
         if (!heldItem.hasItemMeta()) { return; }
-        if (armorSystem.getArmorType(heldItem) == null) { return; }
+        if (armorSystem.getItemType(heldItem) == null) { return; }
         if (!usable) {
             player.sendMessage("§c⚠ §nYou are too inexperienced for this item!§r§c ⚠");
         }
@@ -66,7 +66,9 @@ public class ArmorListener implements Listener {
                     (type.name().endsWith("_LEGGINGS") && inv.getLeggings() == null) ||
                     (type.name().endsWith("_BOOTS") && inv.getBoots() == null)) {
 
-                    armorSystem.addArmorStatsToPlayerStats(player, armor);
+                    if (armorSystem.isArmorUsable(armor, player)) {
+                        armorSystem.addArmorStatsToPlayerStats(player, armor);
+                    }
                 }
             }
         }

@@ -1,5 +1,7 @@
 package io.github.NoOne.nMLArmor;
 
+import io.github.NoOne.nMLItems.ItemRarity;
+import io.github.NoOne.nMLItems.ItemType;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -26,7 +28,7 @@ public class GenerateArmorCommand implements CommandExecutor, TabCompleter {
             String rarity = args[1];
             String type = args[2];
             String piece = args[3];
-            ItemStack armor = armorSystem.generateArmor(player, ArmorRarity.getArmorRarityFromString(rarity), ArmorType.getArmorTypeFromString(type), piece, level);
+            ItemStack armor = armorSystem.generateArmor(player, ItemRarity.getItemRarityFromString(rarity), ItemType.getArmorTypeFromString(type), piece, level);
 
             player.getInventory().setItemInMainHand(armor);
         }
