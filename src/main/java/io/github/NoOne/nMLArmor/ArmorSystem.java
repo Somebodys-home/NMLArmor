@@ -5,6 +5,7 @@ import io.github.NoOne.nMLDefenses.DefenseManager;
 import io.github.NoOne.nMLDefenses.DefenseType;
 import io.github.NoOne.nMLDefenses.NMLDefenses;
 import io.github.NoOne.nMLItems.ItemRarity;
+import io.github.NoOne.nMLItems.ItemSystem;
 import io.github.NoOne.nMLItems.ItemType;
 import io.github.NoOne.nMLPlayerStats.profileSystem.ProfileManager;
 import io.github.NoOne.nMLPlayerStats.statSystem.StatChangeEvent;
@@ -25,15 +26,13 @@ import static io.github.NoOne.nMLDefenses.DefenseType.*;
 
 public class ArmorSystem {
     private NMLArmor nmlArmor;
+    private ItemSystem itemSystem;
     private DefenseManager defenseManager;
-    private NamespacedKey originalNameKey;
-    private NamespacedKey levelKey;
 
     public ArmorSystem(NMLArmor nmlArmor) {
         this.nmlArmor = nmlArmor;
         defenseManager = nmlArmor.getNmlDefenses().getDefenseManager();
-        originalNameKey = new NamespacedKey(nmlArmor, "original_name");
-        levelKey = new NamespacedKey(nmlArmor, "level");
+        itemSystem = nmlArmor.getItemSystem();
     }
 
     public ItemStack generateArmor(Player receiver, ItemRarity rarity, ItemType type, String armorPiece, int level) {
@@ -42,14 +41,14 @@ public class ArmorSystem {
         PersistentDataContainer pdc = meta.getPersistentDataContainer();
         List<String> lore = new ArrayList<>();
 
-        pdc.set(makeItemTypeKey(type), PersistentDataType.INTEGER, 1);
-        pdc.set(makeItemRarityKey(rarity), PersistentDataType.INTEGER, 1);
-        pdc.set(levelKey, PersistentDataType.INTEGER, level);
+        pdc.set(itemSystem.makeItemTypeKey(type), PersistentDataType.INTEGER, 1);
+        pdc.set(itemSystem.makeItemRarityKey(rarity), PersistentDataType.INTEGER, 1);
+        pdc.set(itemSystem.getLevelKey(), PersistentDataType.INTEGER, level);
         weapon.setItemMeta(meta);
 
         String name = generateArmorName(rarity, type, armorPiece, level);
         meta.setDisplayName(name);
-        pdc.set(originalNameKey, PersistentDataType.STRING, name);
+        pdc.set(itemSystem.getOriginalNameKey(), PersistentDataType.STRING, name);
 
         lore.add(ItemRarity.getItemRarityColor(rarity) + "" + ChatColor.BOLD + ItemRarity.getItemRarityString(rarity).toUpperCase() + " " + ItemType.getItemTypeString(type).toUpperCase() + " " + armorPiece.toUpperCase());
         lore.add("");
@@ -57,7 +56,7 @@ public class ArmorSystem {
         weapon.setItemMeta(meta);
 
         generateArmorStats(weapon, type, rarity, level);
-        updateUnusableArmorName(weapon, isArmorUsable(weapon, receiver));
+        itemSystem.updateUnusableItemName(weapon, itemSystem.isItemUsable(weapon, receiver));
 
         return weapon;
     }
@@ -261,81 +260,10 @@ public class ArmorSystem {
         }
     }
 
-    public void updateUnusableArmorName(ItemStack armor, boolean unusable) {
-        ItemMeta meta = armor.getItemMeta();
-        String originalName = getOriginalItemName(armor);
-        String editedName;
-
-        if (!unusable) {
-            editedName = originalName.replaceAll("§[0-9a-fk-or]", "");
-            editedName = "§c§m" + editedName;
-        } else {
-            editedName = originalName;
-        }
-
-        meta.setDisplayName(editedName);
-        armor.setItemMeta(meta);
-    }
-
-    public boolean isArmorUsable(ItemStack armor, Player player) {
-        if (armor == null || !armor.hasItemMeta()) return false;
-
-        ItemMeta meta = armor.getItemMeta();
-        PersistentDataContainer pdc = meta.getPersistentDataContainer();
-        Integer itemLevel = pdc.get(levelKey, PersistentDataType.INTEGER);
-
-        if (itemLevel == null) return false;
-
-        int playerLevel = new ProfileManager(NMLArmor.getNmlPlayerStats()).getPlayerProfile(player.getUniqueId()).getStats().getLevel();
-        return playerLevel >= itemLevel;
-    }
-
-    public NamespacedKey makeItemTypeKey(ItemType type) {
-        return new NamespacedKey(nmlArmor, ItemType.getItemTypeString(type));
-    }
-
-    public ItemType getItemType(ItemStack armor) {
-        ItemMeta meta = armor.getItemMeta();
-        PersistentDataContainer pdc = meta.getPersistentDataContainer();
-
-        for (ItemType type : ItemType.values()) {
-            if (pdc.has(makeItemTypeKey(type), PersistentDataType.INTEGER)) return type;
-        }
-
-        return null;
-    }
-
-    public NamespacedKey makeItemRarityKey(ItemRarity rarity) {
-        return new NamespacedKey(nmlArmor, ItemRarity.getItemRarityString(rarity));
-    }
-
-    public ItemRarity getItemRarity(ItemStack armor) {
-        ItemMeta meta = armor.getItemMeta();
-        PersistentDataContainer pdc = meta.getPersistentDataContainer();
-
-        for (ItemRarity rarity : ItemRarity.values()) {
-            if (pdc.has(makeItemRarityKey(rarity), PersistentDataType.INTEGER)) return rarity;
-        }
-
-        return null;
-    }
-
-    public String getOriginalItemName(ItemStack weapon) {
-        if (weapon == null || weapon.getType().isAir()) return null;
-
-        ItemMeta meta = weapon.getItemMeta();
-        if (meta == null) return null;
-
-        PersistentDataContainer pdc = meta.getPersistentDataContainer();
-        if (!pdc.has(originalNameKey, PersistentDataType.STRING)) return null;
-
-        return pdc.get(originalNameKey, PersistentDataType.STRING);
-    }
-
     public boolean isACustomArmorPiece(ItemStack item) {
         if (item == null || item.getType() == Material.AIR) return false;
         if (!item.hasItemMeta()) { return false; }
-        if (getItemType(item) == null) { return false; }
+        if (itemSystem.getItemTypeFromItemStack(item) == null) { return false; }
 
         return true;
     }

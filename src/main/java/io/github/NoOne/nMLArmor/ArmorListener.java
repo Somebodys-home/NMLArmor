@@ -1,5 +1,6 @@
 package io.github.NoOne.nMLArmor;
 
+import io.github.NoOne.nMLItems.ItemSystem;
 import io.github.NoOne.nMLPlayerStats.profileSystem.ProfileManager;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
@@ -14,30 +15,28 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
 public class ArmorListener implements Listener {
-    private NMLArmor nmlArmor;
     private ArmorSystem armorSystem;
-    private ProfileManager profileManager;
+    private ItemSystem itemSystem;
 
     public ArmorListener(NMLArmor nmlArmor) {
-        this.nmlArmor = nmlArmor;
         armorSystem = nmlArmor.getArmorSystem();
-        profileManager = nmlArmor.getProfileManager();
+        itemSystem = nmlArmor.getItemSystem();
     }
 
     @EventHandler()
     public void armorLevelCheck(PlayerItemHeldEvent event) {
         Player player = event.getPlayer();
         ItemStack heldItem = player.getInventory().getItem(event.getNewSlot());
-        boolean usable = armorSystem.isArmorUsable(heldItem, player);
+        boolean usable = itemSystem.isItemUsable(heldItem, player);
 
         if (heldItem == null || heldItem.getType() == Material.AIR) { return; }
         if (!heldItem.hasItemMeta()) { return; }
-        if (armorSystem.getItemType(heldItem) == null) { return; }
+        if (itemSystem.getItemTypeFromItemStack(heldItem) == null) { return; }
         if (!usable) {
             player.sendMessage("§c⚠ §nYou are too inexperienced for this item!§r§c ⚠");
         }
 
-        armorSystem.updateUnusableArmorName(heldItem, usable);
+        itemSystem.updateUnusableItemName(heldItem, usable);
     }
 
     @EventHandler
@@ -53,6 +52,7 @@ public class ArmorListener implements Listener {
 
             if (armorSystem.isACustomArmorPiece(armor)) {
                 armorSystem.addArmorStatsToPlayerStats(player, armor);
+                itemSystem.updateUnusableItemName(armor, true);
             }
         } else if ((click == ClickType.SHIFT_LEFT || click == ClickType.SHIFT_RIGHT)) {
             ItemStack armor = event.getCurrentItem();
@@ -66,8 +66,9 @@ public class ArmorListener implements Listener {
                     (type.name().endsWith("_LEGGINGS") && inv.getLeggings() == null) ||
                     (type.name().endsWith("_BOOTS") && inv.getBoots() == null)) {
 
-                    if (armorSystem.isArmorUsable(armor, player)) {
+                    if (itemSystem.isItemUsable(armor, player)) {
                         armorSystem.addArmorStatsToPlayerStats(player, armor);
+                        itemSystem.updateUnusableItemName(armor, true);
                     }
                 }
             }
@@ -81,17 +82,14 @@ public class ArmorListener implements Listener {
 
         ClickType click = event.getClick();
         int rawSlot = event.getRawSlot();
+        ItemStack armor = event.getCurrentItem();
 
         if ((click == ClickType.LEFT || click == ClickType.RIGHT) && rawSlot >= 5 && rawSlot <= 8) {
-            ItemStack previousArmor = event.getCurrentItem();
-
-            if (armorSystem.isACustomArmorPiece(previousArmor)) {
-                armorSystem.removeArmorStatsFromPlayerStats(player, previousArmor);
+            if (armorSystem.isACustomArmorPiece(armor)) {
+                armorSystem.removeArmorStatsFromPlayerStats(player, armor);
             }
 
         } else if ((click == ClickType.SHIFT_LEFT || click == ClickType.SHIFT_RIGHT)) {
-            ItemStack armor = event.getCurrentItem();
-
             if (armorSystem.isACustomArmorPiece(armor)) {
                 PlayerInventory inv = player.getInventory();
                 Material type = armor.getType();
@@ -104,7 +102,12 @@ public class ArmorListener implements Listener {
 
                 if (isCurrentlyEquipped) {
                     armorSystem.removeArmorStatsFromPlayerStats(player, armor);
+                    itemSystem.updateUnusableItemName(armor, true);
                 }
+            }
+        } else if (click == ClickType.NUMBER_KEY && rawSlot >= 5 && rawSlot <= 8) {
+            if (armorSystem.isACustomArmorPiece(armor)) {
+                armorSystem.removeArmorStatsFromPlayerStats(player, armor);
             }
         }
     }
@@ -121,16 +124,18 @@ public class ArmorListener implements Listener {
             if (slot >= 5 && slot <= 8) {
                 ItemStack armor = event.getCursor();
 
-                if (armorSystem.isACustomArmorPiece(armor) && !armorSystem.isArmorUsable(armor, player)) {
+                if (armorSystem.isACustomArmorPiece(armor) && !itemSystem.isItemUsable(armor, player)) {
                     event.setCancelled(true);
                     player.sendMessage("§c⚠ §nYou are too inexperienced for this item!§r§c ⚠");
+                    itemSystem.updateUnusableItemName(armor, false);
                 }
             }
         } else if (click == ClickType.SHIFT_LEFT || click == ClickType.SHIFT_RIGHT) {
             ItemStack armor = event.getCurrentItem();
-            if (armorSystem.isACustomArmorPiece(armor) && !armorSystem.isArmorUsable(armor, player)) {
+            if (armorSystem.isACustomArmorPiece(armor) && !itemSystem.isItemUsable(armor, player)) {
                 event.setCancelled(true);
                 player.sendMessage("§c⚠ §nYou are too inexperienced for this item!§r§c ⚠");
+                itemSystem.updateUnusableItemName(armor, false);
             }
         }
     }
@@ -141,7 +146,8 @@ public class ArmorListener implements Listener {
             Player player = event.getPlayer();
             ItemStack item = event.getItem();
 
-            if (armorSystem.isACustomArmorPiece(item) && !armorSystem.isArmorUsable(item, player)) {
+            if (armorSystem.isACustomArmorPiece(item) && !itemSystem.isItemUsable(item, player)) {
+                itemSystem.updateUnusableItemName(item, false);
                 event.setCancelled(true);
                 player.sendMessage("§c⚠ §nYou are too inexperienced for this item!§r§c ⚠");
             }

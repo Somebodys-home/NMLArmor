@@ -2,6 +2,8 @@ package io.github.NoOne.nMLArmor;
 
 import io.github.NoOne.nMLDefenses.DefenseManager;
 import io.github.NoOne.nMLDefenses.NMLDefenses;
+import io.github.NoOne.nMLItems.ItemSystem;
+import io.github.NoOne.nMLItems.NMLItems;
 import io.github.NoOne.nMLPlayerStats.NMLPlayerStats;
 import io.github.NoOne.nMLPlayerStats.profileSystem.ProfileManager;
 import org.bukkit.Bukkit;
@@ -11,16 +13,21 @@ import org.bukkit.plugin.java.JavaPlugin;
 public final class NMLArmor extends JavaPlugin {
     private NMLArmor instance;
     private static NMLPlayerStats nmlPlayerStats;
+    private static NMLItems nmlItems;
     private ProfileManager profileManager;
     private ArmorSystem armorSystem;
     private NMLDefenses nmlDefenses;
     private DefenseManager defenseManager;
+    private ItemSystem itemSystem;
 
     @Override
     public void onEnable() {
         instance = this;
         nmlDefenses = JavaPlugin.getPlugin(NMLDefenses.class);
+        nmlItems = JavaPlugin.getPlugin(NMLItems.class);
+
         defenseManager = nmlDefenses.getDefenseManager();
+        itemSystem = nmlItems.getItemSystem();
 
         Plugin plugin = Bukkit.getPluginManager().getPlugin("NMLPlayerStats");
         if (plugin instanceof NMLPlayerStats statsPlugin) {
@@ -38,14 +45,6 @@ public final class NMLArmor extends JavaPlugin {
         getCommand("generateArmor").setExecutor(new GenerateArmorCommand(this));
     }
 
-    public NMLArmor getInstance() {
-        return instance;
-    }
-
-    public static NMLPlayerStats getNmlPlayerStats() {
-        return nmlPlayerStats;
-    }
-
     public ProfileManager getProfileManager() {
         return profileManager;
     }
@@ -56,5 +55,9 @@ public final class NMLArmor extends JavaPlugin {
 
     public NMLDefenses getNmlDefenses() {
         return nmlDefenses;
+    }
+
+    public ItemSystem getItemSystem() {
+        return itemSystem;
     }
 }
