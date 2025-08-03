@@ -1,7 +1,5 @@
 package io.github.NoOne.nMLArmor;
 
-import io.github.NoOne.nMLDefenses.DefenseManager;
-import io.github.NoOne.nMLDefenses.NMLDefenses;
 import io.github.NoOne.nMLItems.ItemSystem;
 import io.github.NoOne.nMLItems.NMLItems;
 import io.github.NoOne.nMLPlayerStats.NMLPlayerStats;
@@ -16,17 +14,12 @@ public final class NMLArmor extends JavaPlugin {
     private static NMLItems nmlItems;
     private ProfileManager profileManager;
     private ArmorSystem armorSystem;
-    private NMLDefenses nmlDefenses;
-    private DefenseManager defenseManager;
     private ItemSystem itemSystem;
 
     @Override
     public void onEnable() {
         instance = this;
-        nmlDefenses = JavaPlugin.getPlugin(NMLDefenses.class);
         nmlItems = JavaPlugin.getPlugin(NMLItems.class);
-
-        defenseManager = nmlDefenses.getDefenseManager();
         itemSystem = nmlItems.getItemSystem();
 
         Plugin plugin = Bukkit.getPluginManager().getPlugin("NMLPlayerStats");
@@ -51,10 +44,6 @@ public final class NMLArmor extends JavaPlugin {
 
     public ArmorSystem getArmorSystem() {
         return armorSystem;
-    }
-
-    public NMLDefenses getNmlDefenses() {
-        return nmlDefenses;
     }
 
     public ItemSystem getItemSystem() {
