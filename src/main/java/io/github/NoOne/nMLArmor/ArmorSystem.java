@@ -252,10 +252,7 @@ public class ArmorSystem {
     }
 
     public boolean isACustomArmorPiece(ItemStack item) {
-        if (item == null || item.getType() == Material.AIR) return false;
-        if (!item.hasItemMeta()) { return false; }
-        if (ItemSystem.getItemTypeFromItemStack(item) == null) { return false; }
-
-        return true;
+        return ItemSystem.getItemTypeFromItemStack(item) == ItemType.HELMET || ItemSystem.getItemTypeFromItemStack(item) == ItemType.CHESTPLATE ||
+                ItemSystem.getItemTypeFromItemStack(item) == ItemType.LEGGINGS ||  ItemSystem.getItemTypeFromItemStack(item) == ItemType.BOOTS;
     }
 }

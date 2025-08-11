@@ -8,7 +8,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.ClickType;
+import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.inventory.ItemStack;
@@ -16,10 +18,22 @@ import org.bukkit.inventory.PlayerInventory;
 
 public class ArmorListener implements Listener {
     private ArmorSystem armorSystem;
-    private ItemSystem itemSystem;
 
     public ArmorListener(NMLArmor nmlArmor) {
         armorSystem = nmlArmor.getArmorSystem();
+    }
+
+    @EventHandler
+    public void updatePlayerStatsWithArmor(ArmorChangeEvent event) {
+        switch (event.getAddremove()) {
+            case '+' -> {
+                armorSystem.addArmorStatsToPlayerStats(event.getPlayer(), event.getArmor());
+                ItemSystem.updateUnusableItemName(event.getArmor(), true);
+            }
+            case '-' -> {
+                armorSystem.removeArmorStatsFromPlayerStats(event.getPlayer(), event.getArmor());
+            }
+        }
     }
 
     @EventHandler()
@@ -39,114 +53,32 @@ public class ArmorListener implements Listener {
     }
 
     @EventHandler
-    public void updatePlayerStatsWithArmor(ArmorChangeEvent event) {
-        switch (event.getAddremove()) {
-            case '+' -> {
-                armorSystem.addArmorStatsToPlayerStats(event.getPlayer(), event.getArmor());
-                ItemSystem.updateUnusableItemName(event.getArmor(), true);
-            }
-            case '-' -> {
-                armorSystem.removeArmorStatsFromPlayerStats(event.getPlayer(), event.getArmor());
+    public void blockManuallyEquippingUnusableArmor(InventoryClickEvent event) {
+        Player player = (Player) event.getWhoClicked();
+        InventoryAction action = event.getAction();
+        ItemStack armor = event.getCursor();
+        int slot = event.getSlot();
+
+        if ((slot >= 36 && slot <= 40) && (action == InventoryAction.PLACE_ALL || action == InventoryAction.PLACE_ONE || action == InventoryAction.PLACE_SOME)) {
+            if (armorSystem.isACustomArmorPiece(armor) && !ItemSystem.isItemUsable(armor, player)) {
+                player.sendMessage("§c⚠ §nYou are too inexperienced for this item!§r§c ⚠");
+                event.setCancelled(true);
+                ItemSystem.updateUnusableItemName(armor, false);
             }
         }
     }
 
-//    @EventHandler
-//    public void updatePlayerStatsWhenEquippingArmor(InventoryClickEvent event) {
-//        if (!(event.getWhoClicked() instanceof Player player)) return;
-//        if (event.getClickedInventory() == null) return;
-//
-//        ClickType click = event.getClick();
-//        int rawSlot = event.getRawSlot();
-//
-//        if ((click == ClickType.LEFT || click == ClickType.RIGHT) && rawSlot >= 5 && rawSlot <= 8) {
-//            ItemStack armor = event.getCursor();
-//
-//            if (armorSystem.isACustomArmorPiece(armor)) {
-//                armorSystem.addArmorStatsToPlayerStats(player, armor);
-//                ItemSystem.updateUnusableItemName(armor, true);
-//            }
-//        } else if ((click == ClickType.SHIFT_LEFT || click == ClickType.SHIFT_RIGHT)) {
-//            ItemStack armor = event.getCurrentItem();
-//
-//            if (armorSystem.isACustomArmorPiece(armor)) {
-//                PlayerInventory inv = player.getInventory();
-//                Material type = armor.getType();
-//
-//                if ((type.name().endsWith("_HELMET") && inv.getHelmet() == null) ||
-//                    (type.name().endsWith("_CHESTPLATE") && inv.getChestplate() == null) ||
-//                    (type.name().endsWith("_LEGGINGS") && inv.getLeggings() == null) ||
-//                    (type.name().endsWith("_BOOTS") && inv.getBoots() == null)) {
-//
-//                    if (itemSystem.isItemUsable(armor, player)) {
-//                        armorSystem.addArmorStatsToPlayerStats(player, armor);
-//                        itemSystem.updateUnusableItemName(armor, true);
-//                    }
-//                }
-//            }
-//        }
-//    }
-//
-//    @EventHandler
-//    public void updatePlayerStatsWhenUnequippingArmor(InventoryClickEvent event) {
-//        if (!(event.getWhoClicked() instanceof Player player)) return;
-//        if (event.getClickedInventory() == null) return;
-//
-//        ClickType click = event.getClick();
-//        int rawSlot = event.getRawSlot();
-//        ItemStack armor = event.getCurrentItem();
-//
-//        if ((click == ClickType.LEFT || click == ClickType.RIGHT) && rawSlot >= 5 && rawSlot <= 8) {
-//            if (armorSystem.isACustomArmorPiece(armor)) {
-//                armorSystem.removeArmorStatsFromPlayerStats(player, armor);
-//            }
-//
-//        } else if ((click == ClickType.SHIFT_LEFT || click == ClickType.SHIFT_RIGHT)) {
-//            if (armorSystem.isACustomArmorPiece(armor)) {
-//                PlayerInventory inv = player.getInventory();
-//                Material type = armor.getType();
-//
-//                boolean isCurrentlyEquipped =
-//                        (type.name().endsWith("_HELMET") && armor.equals(inv.getHelmet())) ||
-//                                (type.name().endsWith("_CHESTPLATE") && armor.equals(inv.getChestplate())) ||
-//                                (type.name().endsWith("_LEGGINGS") && armor.equals(inv.getLeggings())) ||
-//                                (type.name().endsWith("_BOOTS") && armor.equals(inv.getBoots()));
-//
-//                if (isCurrentlyEquipped) {
-//                    armorSystem.removeArmorStatsFromPlayerStats(player, armor);
-//                    itemSystem.updateUnusableItemName(armor, true);
-//                }
-//            }
-//        } else if (click == ClickType.NUMBER_KEY && rawSlot >= 5 && rawSlot <= 8) {
-//            if (armorSystem.isACustomArmorPiece(armor)) {
-//                armorSystem.removeArmorStatsFromPlayerStats(player, armor);
-//            }
-//        }
-//    }
-
     @EventHandler
-    public void blockEquippingUnusableArmor(InventoryClickEvent event) {
-        if (!(event.getWhoClicked() instanceof Player player)) return;
-        if (event.getClickedInventory() == null) return;
-
+    public void blockShiftEquippingUnusableArmor(InventoryClickEvent event) {
+        Player player = (Player) event.getWhoClicked();
         ClickType click = event.getClick();
-        if (click == ClickType.LEFT || click == ClickType.RIGHT) {
-            int slot = event.getRawSlot();
-            if (slot >= 5 && slot <= 8) {
-                ItemStack armor = event.getCursor();
+        ItemStack armor = event.getCurrentItem();
 
-                if (armorSystem.isACustomArmorPiece(armor) && !itemSystem.isItemUsable(armor, player)) {
-                    event.setCancelled(true);
-                    player.sendMessage("§c⚠ §nYou are too inexperienced for this item!§r§c ⚠");
-                    itemSystem.updateUnusableItemName(armor, false);
-                }
-            }
-        } else if (click == ClickType.SHIFT_LEFT || click == ClickType.SHIFT_RIGHT) {
-            ItemStack armor = event.getCurrentItem();
-            if (armorSystem.isACustomArmorPiece(armor) && !itemSystem.isItemUsable(armor, player)) {
-                event.setCancelled(true);
+        if (click == ClickType.SHIFT_LEFT || click == ClickType.SHIFT_RIGHT) {
+            if (armorSystem.isACustomArmorPiece(armor) && !ItemSystem.isItemUsable(armor, player)) {
                 player.sendMessage("§c⚠ §nYou are too inexperienced for this item!§r§c ⚠");
-                itemSystem.updateUnusableItemName(armor, false);
+                event.setCancelled(true);
+                ItemSystem.updateUnusableItemName(armor, false);
             }
         }
     }
@@ -157,8 +89,8 @@ public class ArmorListener implements Listener {
             Player player = event.getPlayer();
             ItemStack item = event.getItem();
 
-            if (armorSystem.isACustomArmorPiece(item) && !itemSystem.isItemUsable(item, player)) {
-                itemSystem.updateUnusableItemName(item, false);
+            if (armorSystem.isACustomArmorPiece(item) && !ItemSystem.isItemUsable(item, player)) {
+                ItemSystem.updateUnusableItemName(item, false);
                 event.setCancelled(true);
                 player.sendMessage("§c⚠ §nYou are too inexperienced for this item!§r§c ⚠");
             }
