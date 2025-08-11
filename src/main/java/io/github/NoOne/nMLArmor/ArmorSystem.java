@@ -25,13 +25,14 @@ public class ArmorSystem {
         this.nmlArmor = nmlArmor;
     }
 
-    public ItemStack generateArmor(Player receiver, ItemRarity rarity, ItemType type, String armorPiece, int level) {
+    public ItemStack generateArmor(Player receiver, ItemRarity rarity, ItemType type, ItemType armorPiece, int level) {
         ItemStack weapon = new ItemStack(ItemType.getItemTypeMaterial(type, armorPiece));
         ItemMeta meta = weapon.getItemMeta();
         PersistentDataContainer pdc = meta.getPersistentDataContainer();
         List<String> lore = new ArrayList<>();
 
         pdc.set(ItemSystem.makeItemTypeKey(type), PersistentDataType.INTEGER, 1);
+        pdc.set(ItemSystem.makeItemTypeKey(armorPiece), PersistentDataType.INTEGER, 1);
         pdc.set(ItemSystem.makeItemRarityKey(rarity), PersistentDataType.INTEGER, 1);
         pdc.set(ItemSystem.getLevelKey(), PersistentDataType.INTEGER, level);
         weapon.setItemMeta(meta);
@@ -40,7 +41,7 @@ public class ArmorSystem {
         meta.setDisplayName(name);
         pdc.set(ItemSystem.getOriginalNameKey(), PersistentDataType.STRING, name);
 
-        lore.add(ItemRarity.getItemRarityColor(rarity) + "" + ChatColor.BOLD + ItemRarity.getItemRarityString(rarity).toUpperCase() + " " + ItemType.getItemTypeString(type).toUpperCase() + " " + armorPiece.toUpperCase());
+        lore.add(ItemRarity.getItemRarityColor(rarity) + "" + ChatColor.BOLD + ItemRarity.getItemRarityString(rarity).toUpperCase() + " " + ItemType.getItemTypeString(type).toUpperCase() + " " + ItemType.getItemTypeString(armorPiece).toUpperCase());
         lore.add("");
         meta.setLore(lore);
         weapon.setItemMeta(meta);
@@ -51,7 +52,7 @@ public class ArmorSystem {
         return weapon;
     }
 
-    public String generateArmorName(ItemRarity rarity, ItemType type, String armorPiece, int level) {
+    public String generateArmorName(ItemRarity rarity, ItemType type, ItemType armorPiece, int level) {
         String[] nameSegments = null;
         String name = "";
 
@@ -94,44 +95,44 @@ public class ArmorSystem {
 
         assert nameSegments != null;
         if (type == ItemType.LIGHT) {
-            if (Objects.equals(armorPiece, "helmet")) {
+            if (armorPiece == ItemType.HELMET) {
                 List<String> sword = new ArrayList<>(List.of("Cap"));
                 nameSegments[nameSegments.length - 1] = sword.get(ThreadLocalRandom.current().nextInt(sword.size()));
-            } else if (Objects.equals(armorPiece, "chestplate")) {
+            } else if (armorPiece == ItemType.CHESTPLATE) {
                 List<String> sword = new ArrayList<>(List.of("Shirt"));
                 nameSegments[nameSegments.length - 1] = sword.get(ThreadLocalRandom.current().nextInt(sword.size()));
-            } else if (Objects.equals(armorPiece, "leggings")) {
+            } else if (armorPiece == ItemType.LEGGINGS) {
                 List<String> sword = new ArrayList<>(List.of("Pants", "GYATT"));
                 nameSegments[nameSegments.length - 1] = sword.get(ThreadLocalRandom.current().nextInt(sword.size()));
-            } else if (Objects.equals(armorPiece, "boots")) {
+            } else if (armorPiece == ItemType.BOOTS) {
                 List<String> sword = new ArrayList<>(List.of("Shoes"));
                 nameSegments[nameSegments.length - 1] = sword.get(ThreadLocalRandom.current().nextInt(sword.size()));
             }
         } else if (type == ItemType.MEDIUM) {
-            if (Objects.equals(armorPiece, "helmet")) {
+            if (armorPiece == ItemType.HELMET) {
                 List<String> sword = new ArrayList<>(List.of("Coif", "Aventail"));
                 nameSegments[nameSegments.length - 1] = sword.get(ThreadLocalRandom.current().nextInt(sword.size()));
-            } else if (Objects.equals(armorPiece, "chestplate")) {
+            } else if (armorPiece == ItemType.CHESTPLATE) {
                 List<String> sword = new ArrayList<>(List.of("Hauberk"));
                 nameSegments[nameSegments.length - 1] = sword.get(ThreadLocalRandom.current().nextInt(sword.size()));
-            } else if (Objects.equals(armorPiece, "leggings")) {
+            } else if (armorPiece == ItemType.LEGGINGS) {
                 List<String> sword = new ArrayList<>(List.of("Chausses", "GYATT"));
                 nameSegments[nameSegments.length - 1] = sword.get(ThreadLocalRandom.current().nextInt(sword.size()));
-            } else if (Objects.equals(armorPiece, "boots")) {
+            } else if (armorPiece == ItemType.BOOTS) {
                 List<String> sword = new ArrayList<>(List.of("Paleos"));
                 nameSegments[nameSegments.length - 1] = sword.get(ThreadLocalRandom.current().nextInt(sword.size()));
             }
         } else if (type == ItemType.HEAVY) {
-            if (Objects.equals(armorPiece, "helmet")) {
+            if (armorPiece == ItemType.HELMET) {
                 List<String> sword = new ArrayList<>(List.of("Helmet"));
                 nameSegments[nameSegments.length - 1] = sword.get(ThreadLocalRandom.current().nextInt(sword.size()));
-            } else if (Objects.equals(armorPiece, "chestplate")) {
+            } else if (armorPiece == ItemType.CHESTPLATE) {
                 List<String> sword = new ArrayList<>(List.of("Chestplate"));
                 nameSegments[nameSegments.length - 1] = sword.get(ThreadLocalRandom.current().nextInt(sword.size()));
-            } else if (Objects.equals(armorPiece, "leggings")) {
+            } else if (armorPiece == ItemType.LEGGINGS) {
                 List<String> sword = new ArrayList<>(List.of("Chausses", "GYATT"));
                 nameSegments[nameSegments.length - 1] = sword.get(ThreadLocalRandom.current().nextInt(sword.size()));
-            } else if (Objects.equals(armorPiece, "boots")) {
+            } else if (armorPiece == ItemType.BOOTS) {
                 List<String> sword = new ArrayList<>(List.of("Boots"));
                 nameSegments[nameSegments.length - 1] = sword.get(ThreadLocalRandom.current().nextInt(sword.size()));
             }

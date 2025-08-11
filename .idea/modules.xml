@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/NMLArmor.iml" filepath="$PROJECT_DIR$/NMLArmor.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/NMLArmor.iml" filepath="$PROJECT_DIR$/.idea/NMLArmor.iml" />
     </modules>
   </component>
 </project>
