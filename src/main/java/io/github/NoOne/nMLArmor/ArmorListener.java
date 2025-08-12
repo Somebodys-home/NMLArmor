@@ -1,7 +1,6 @@
 package io.github.NoOne.nMLArmor;
 
 import io.github.NoOne.nMLItems.ItemSystem;
-import io.github.NoOne.nMLPlayerStats.profileSystem.ProfileManager;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -10,11 +9,9 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
 
 public class ArmorListener implements Listener {
     private ArmorSystem armorSystem;
@@ -25,15 +22,9 @@ public class ArmorListener implements Listener {
 
     @EventHandler
     public void updatePlayerStatsWithArmor(ArmorChangeEvent event) {
-        switch (event.getAddremove()) {
-            case '+' -> {
-                armorSystem.addArmorStatsToPlayerStats(event.getPlayer(), event.getArmor());
-                ItemSystem.updateUnusableItemName(event.getArmor(), true);
-            }
-            case '-' -> {
-                armorSystem.removeArmorStatsFromPlayerStats(event.getPlayer(), event.getArmor());
-            }
-        }
+        armorSystem.removeArmorStatsFromPlayerStats(event.getPlayer(), event.getArmorRemoved());
+        armorSystem.addArmorStatsToPlayerStats(event.getPlayer(), event.getArmorEquipped());
+        ItemSystem.updateUnusableItemName(event.getArmorEquipped(), true);
     }
 
     @EventHandler()

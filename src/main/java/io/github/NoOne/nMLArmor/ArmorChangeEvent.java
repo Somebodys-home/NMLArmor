@@ -9,13 +9,13 @@ import org.jetbrains.annotations.NotNull;
 public class ArmorChangeEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
     private final Player player;
-    private final Character addremove;
-    private final ItemStack armor;
+    private final ItemStack armorRemoved;
+    private final ItemStack armorEquipped;
 
-    public ArmorChangeEvent(@NotNull Player player, Character addremove, ItemStack armor) {
+    public ArmorChangeEvent(@NotNull Player player, ItemStack armorRemoved, ItemStack armor) {
         this.player = player;
-        this.addremove = addremove;
-        this.armor = armor;
+        this.armorRemoved = armorRemoved;
+        this.armorEquipped = armor;
     }
 
     @Override
@@ -25,7 +25,7 @@ public class ArmorChangeEvent extends Event {
 
     public Player getPlayer() { return player; }
 
-    public Character getAddremove() { return addremove; }
+    public ItemStack getArmorRemoved() { return armorRemoved; }
 
-    public ItemStack getArmor() { return armor; }
+    public ItemStack getArmorEquipped() { return armorEquipped; }
 }
