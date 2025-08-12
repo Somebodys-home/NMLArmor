@@ -252,6 +252,10 @@ public class ArmorSystem {
     }
 
     public boolean isACustomArmorPiece(ItemStack item) {
+        if (item == null) {
+            return false;
+        }
+
         return ItemSystem.getItemTypeFromItemStack(item) == ItemType.HELMET || ItemSystem.getItemTypeFromItemStack(item) == ItemType.CHESTPLATE ||
                 ItemSystem.getItemTypeFromItemStack(item) == ItemType.LEGGINGS ||  ItemSystem.getItemTypeFromItemStack(item) == ItemType.BOOTS;
     }
