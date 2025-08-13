@@ -12,11 +12,11 @@ public class ArmorChangeEvent extends Event {
     private final ItemStack armorRemoved;
     private final ItemStack armorEquipped;
 
-    public ArmorChangeEvent(@NotNull Player player, ItemStack armorRemoved, ItemStack armor) {
+    public ArmorChangeEvent(@NotNull Player player, ItemStack armorRemoved, ItemStack armorEquipped) {
         super(false);
         this.player = player;
         this.armorRemoved = armorRemoved;
-        this.armorEquipped = armor;
+        this.armorEquipped = armorEquipped;
     }
 
     @Override
