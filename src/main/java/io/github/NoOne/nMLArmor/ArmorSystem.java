@@ -208,10 +208,7 @@ public class ArmorSystem {
 
             for (Map.Entry<ItemStat, Double> stat : statMap.entrySet()) {
                 switch (stat.getKey()) {
-                    case BLOCK -> {
-                        player.sendMessage("adding block stat");
-                        playerStats.add2Stat("block", stat.getValue().intValue());
-                    }
+                    case GUARD -> playerStats.add2Stat("guard", stat.getValue().intValue());
                     case EVASION -> playerStats.add2Stat("evasion", stat.getValue().intValue());
                     case DEFENSE -> playerStats.add2Stat("defense", stat.getValue().intValue());
                     case OVERHEALTH -> playerStats.add2Stat("maxoverhealth", stat.getValue());
@@ -237,7 +234,7 @@ public class ArmorSystem {
 
             for (Map.Entry<ItemStat, Double> stat : statMap.entrySet()) {
                 switch (stat.getKey()) {
-                    case BLOCK -> stats.removeFromStat("block", stat.getValue().intValue());
+                    case GUARD -> stats.removeFromStat("guard", stat.getValue().intValue());
                     case EVASION -> stats.removeFromStat("evasion", stat.getValue().intValue());
                     case DEFENSE -> stats.removeFromStat("defense", stat.getValue().intValue());
                     case OVERHEALTH -> stats.removeFromStat("maxoverhealth", stat.getValue());
