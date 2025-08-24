@@ -35,7 +35,7 @@ public class ArmorListener implements Listener {
 
         if (heldItem == null || heldItem.getType() == Material.AIR) { return; }
         if (!heldItem.hasItemMeta()) { return; }
-        if (ItemSystem.getItemTypeFromItemStack(heldItem) == null) { return; }
+        if (ItemSystem.getItemType(heldItem) == null) { return; }
         if (!usable) {
             player.sendMessage("§c⚠ §nYou are too inexperienced for this item!§r§c ⚠");
         }

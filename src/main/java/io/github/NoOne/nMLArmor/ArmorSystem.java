@@ -8,7 +8,6 @@ import io.github.NoOne.nMLPlayerStats.statSystem.StatChangeEvent;
 import io.github.NoOne.nMLPlayerStats.statSystem.Stats;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -17,6 +16,7 @@ import org.bukkit.persistence.PersistentDataType;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import static io.github.NoOne.nMLItems.ItemStat.*;
+import static io.github.NoOne.nMLItems.ItemType.*;
 
 public class ArmorSystem {
     private NMLArmor nmlArmor;
@@ -26,8 +26,8 @@ public class ArmorSystem {
     }
 
     public ItemStack generateArmor(Player receiver, ItemRarity rarity, ItemType type, ItemType armorPiece, int level) {
-        ItemStack weapon = new ItemStack(ItemType.getItemTypeMaterial(type, armorPiece));
-        ItemMeta meta = weapon.getItemMeta();
+        ItemStack armor = new ItemStack(ItemType.getItemTypeMaterial(type, armorPiece));
+        ItemMeta meta = armor.getItemMeta();
         PersistentDataContainer pdc = meta.getPersistentDataContainer();
         List<String> lore = new ArrayList<>();
 
@@ -35,7 +35,8 @@ public class ArmorSystem {
         pdc.set(ItemSystem.makeItemTypeKey(armorPiece), PersistentDataType.INTEGER, 1);
         pdc.set(ItemSystem.makeItemRarityKey(rarity), PersistentDataType.INTEGER, 1);
         pdc.set(ItemSystem.getLevelKey(), PersistentDataType.INTEGER, level);
-        weapon.setItemMeta(meta);
+        meta.setUnbreakable(true);
+        armor.setItemMeta(meta);
 
         String name = generateArmorName(rarity, type, armorPiece, level);
         meta.setDisplayName(name);
@@ -44,12 +45,12 @@ public class ArmorSystem {
         lore.add(ItemRarity.getItemRarityColor(rarity) + "" + ChatColor.BOLD + ItemRarity.getItemRarityString(rarity).toUpperCase() + " " + ItemType.getItemTypeString(type).toUpperCase() + " " + ItemType.getItemTypeString(armorPiece).toUpperCase());
         lore.add("");
         meta.setLore(lore);
-        weapon.setItemMeta(meta);
+        armor.setItemMeta(meta);
 
-        generateArmorStats(weapon, type, rarity, level);
-        ItemSystem.updateUnusableItemName(weapon, ItemSystem.isItemUsable(weapon, receiver));
+        generateArmorStats(armor, type, rarity, level);
+        ItemSystem.updateUnusableItemName(armor, ItemSystem.isItemUsable(armor, receiver));
 
-        return weapon;
+        return armor;
     }
 
     public String generateArmorName(ItemRarity rarity, ItemType type, ItemType armorPiece, int level) {
@@ -95,7 +96,7 @@ public class ArmorSystem {
 
         assert nameSegments != null;
         if (type == ItemType.LIGHT) {
-            if (armorPiece == ItemType.HELMET) {
+            if (armorPiece == HELMET) {
                 List<String> sword = new ArrayList<>(List.of("Cap"));
                 nameSegments[nameSegments.length - 1] = sword.get(ThreadLocalRandom.current().nextInt(sword.size()));
             } else if (armorPiece == ItemType.CHESTPLATE) {
@@ -109,7 +110,7 @@ public class ArmorSystem {
                 nameSegments[nameSegments.length - 1] = sword.get(ThreadLocalRandom.current().nextInt(sword.size()));
             }
         } else if (type == ItemType.MEDIUM) {
-            if (armorPiece == ItemType.HELMET) {
+            if (armorPiece == HELMET) {
                 List<String> sword = new ArrayList<>(List.of("Coif", "Aventail"));
                 nameSegments[nameSegments.length - 1] = sword.get(ThreadLocalRandom.current().nextInt(sword.size()));
             } else if (armorPiece == ItemType.CHESTPLATE) {
@@ -123,7 +124,7 @@ public class ArmorSystem {
                 nameSegments[nameSegments.length - 1] = sword.get(ThreadLocalRandom.current().nextInt(sword.size()));
             }
         } else if (type == ItemType.HEAVY) {
-            if (armorPiece == ItemType.HELMET) {
+            if (armorPiece == HELMET) {
                 List<String> sword = new ArrayList<>(List.of("Helmet"));
                 nameSegments[nameSegments.length - 1] = sword.get(ThreadLocalRandom.current().nextInt(sword.size()));
             } else if (armorPiece == ItemType.CHESTPLATE) {
@@ -198,7 +199,7 @@ public class ArmorSystem {
             }
         }
 
-        ItemSystem.updateLoreWithItemStats(armor);
+        ItemSystem.updateLoreWithStats(armor);
     }
 
     public void addArmorStatsToPlayerStats(Player player, ItemStack armor) {
@@ -258,8 +259,8 @@ public class ArmorSystem {
             return false;
         }
 
-        return ItemSystem.getItemTypeFromItemStack(item) == ItemType.HELMET || ItemSystem.getItemTypeFromItemStack(item) == ItemType.CHESTPLATE ||
-                ItemSystem.getItemTypeFromItemStack(item) == ItemType.LEGGINGS ||  ItemSystem.getItemTypeFromItemStack(item) == ItemType.BOOTS
-                || ItemSystem.getItemTypeFromItemStack(item) == ItemType.SHIELD;
+        return ItemSystem.getItemType(item) == HELMET || ItemSystem.getItemType(item) == CHESTPLATE ||
+                ItemSystem.getItemType(item) == LEGGINGS ||  ItemSystem.getItemType(item) == BOOTS
+                || ItemSystem.getItemType(item) == SHIELD;
     }
 }
