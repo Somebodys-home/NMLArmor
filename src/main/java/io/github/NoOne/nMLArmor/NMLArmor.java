@@ -11,16 +11,12 @@ import org.bukkit.plugin.java.JavaPlugin;
 public final class NMLArmor extends JavaPlugin {
     private NMLArmor instance;
     private static NMLPlayerStats nmlPlayerStats;
-    private static NMLItems nmlItems;
     private ProfileManager profileManager;
     private ArmorSystem armorSystem;
-    private ItemSystem itemSystem;
 
     @Override
     public void onEnable() {
         instance = this;
-        nmlItems = JavaPlugin.getPlugin(NMLItems.class);
-        itemSystem = nmlItems.getItemSystem();
 
         Plugin plugin = Bukkit.getPluginManager().getPlugin("NMLPlayerStats");
         if (plugin instanceof NMLPlayerStats statsPlugin) {
@@ -38,15 +34,15 @@ public final class NMLArmor extends JavaPlugin {
         getCommand("generateArmor").setExecutor(new GenerateArmorCommand(this));
     }
 
+    public NMLArmor getInstance() {
+        return instance;
+    }
+
     public ProfileManager getProfileManager() {
         return profileManager;
     }
 
     public ArmorSystem getArmorSystem() {
         return armorSystem;
-    }
-
-    public ItemSystem getItemSystem() {
-        return itemSystem;
     }
 }
