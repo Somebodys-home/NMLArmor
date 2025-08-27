@@ -38,11 +38,11 @@ public class ArmorSystem {
         meta.setUnbreakable(true);
         armor.setItemMeta(meta);
 
-        String name = generateArmorName(rarity, type, armorPiece, level);
+        String name = ItemSystem.generateItemName(type, armorPiece, rarity);
         meta.setDisplayName(name);
         pdc.set(ItemSystem.getOriginalNameKey(), PersistentDataType.STRING, name);
 
-        lore.add(ItemRarity.getItemRarityColor(rarity) + "" + ChatColor.BOLD + ItemRarity.getItemRarityString(rarity).toUpperCase() + " " + ItemType.getItemTypeString(type).toUpperCase() + " " + ItemType.getItemTypeString(armorPiece).toUpperCase());
+        lore.add("§o§fLv. " + level + "§r " +  ItemRarity.getItemRarityColor(rarity) + ChatColor.BOLD + ItemRarity.getItemRarityString(rarity).toUpperCase() + " " + ItemType.getItemTypeString(type).toUpperCase() + " " + ItemType.getItemTypeString(armorPiece).toUpperCase());
         lore.add("");
         meta.setLore(lore);
         armor.setItemMeta(meta);
@@ -51,104 +51,6 @@ public class ArmorSystem {
         ItemSystem.updateUnusableItemName(armor, ItemSystem.isItemUsable(armor, receiver));
 
         return armor;
-    }
-
-    public String generateArmorName(ItemRarity rarity, ItemType type, ItemType armorPiece, int level) {
-        String[] nameSegments = null;
-        String name = "";
-
-        if (rarity == ItemRarity.COMMON) {
-
-            nameSegments = new String[2];
-            List<String> badAdjectives = new ArrayList<>(List.of("Garbage", "Awful", "Do Better", "Babies' First", "Oh God That", "Rotten", "Poor", "Degrading", "Forgotten", "Racist"));
-
-            nameSegments[0] = badAdjectives.get(ThreadLocalRandom.current().nextInt(badAdjectives.size()));
-
-        } else if (rarity == ItemRarity.UNCOMMON) {
-
-            nameSegments = new String[2];
-            List<String> goodAdjectives = new ArrayList<>(List.of("Pretty Alright", "Hand-me-downed", "Based", "W", "Neato Dorito", "Goofy Ahh", "Nobodies'"));
-            int randomAdjective = ThreadLocalRandom.current().nextInt(goodAdjectives.size());
-
-            nameSegments[0] = goodAdjectives.get(randomAdjective);
-
-        } else if (rarity == ItemRarity.RARE) {
-
-            nameSegments = new String[3];
-            List<String> goodAdjectives = new ArrayList<>(List.of("Pretty Alright", "Solid", "Well-Made", "Lifelong", "Based", "W", "Almost Mythical", "Neato Dorito", "Goofy Ahh", "Nobodies'"));
-            int randomAdjective = ThreadLocalRandom.current().nextInt(goodAdjectives.size());
-
-            nameSegments[0] = goodAdjectives.get(randomAdjective);
-            goodAdjectives.remove(randomAdjective);
-            nameSegments[1] = goodAdjectives.get(ThreadLocalRandom.current().nextInt(goodAdjectives.size()));
-
-        } else if (rarity == ItemRarity.MYTHICAL) {
-
-            nameSegments = new String[3];
-            List<String> greatAdjectives = new ArrayList<>(List.of("Amazing", "Godly", "King's", "Fabled", "Based", "W", "Legendary", "Goofy Ahh", "Nobodies'"));
-            int randomAdjective = ThreadLocalRandom.current().nextInt(greatAdjectives.size());
-
-            nameSegments[0] = greatAdjectives.get(randomAdjective);
-            greatAdjectives.remove(randomAdjective);
-            nameSegments[1] = greatAdjectives.get(ThreadLocalRandom.current().nextInt(greatAdjectives.size()));
-
-        }
-
-        assert nameSegments != null;
-        if (type == ItemType.LIGHT) {
-            if (armorPiece == HELMET) {
-                List<String> sword = new ArrayList<>(List.of("Cap"));
-                nameSegments[nameSegments.length - 1] = sword.get(ThreadLocalRandom.current().nextInt(sword.size()));
-            } else if (armorPiece == ItemType.CHESTPLATE) {
-                List<String> sword = new ArrayList<>(List.of("Shirt"));
-                nameSegments[nameSegments.length - 1] = sword.get(ThreadLocalRandom.current().nextInt(sword.size()));
-            } else if (armorPiece == ItemType.LEGGINGS) {
-                List<String> sword = new ArrayList<>(List.of("Pants", "GYATT"));
-                nameSegments[nameSegments.length - 1] = sword.get(ThreadLocalRandom.current().nextInt(sword.size()));
-            } else if (armorPiece == ItemType.BOOTS) {
-                List<String> sword = new ArrayList<>(List.of("Shoes"));
-                nameSegments[nameSegments.length - 1] = sword.get(ThreadLocalRandom.current().nextInt(sword.size()));
-            }
-        } else if (type == ItemType.MEDIUM) {
-            if (armorPiece == HELMET) {
-                List<String> sword = new ArrayList<>(List.of("Coif", "Aventail"));
-                nameSegments[nameSegments.length - 1] = sword.get(ThreadLocalRandom.current().nextInt(sword.size()));
-            } else if (armorPiece == ItemType.CHESTPLATE) {
-                List<String> sword = new ArrayList<>(List.of("Hauberk"));
-                nameSegments[nameSegments.length - 1] = sword.get(ThreadLocalRandom.current().nextInt(sword.size()));
-            } else if (armorPiece == ItemType.LEGGINGS) {
-                List<String> sword = new ArrayList<>(List.of("Chausses", "GYATT"));
-                nameSegments[nameSegments.length - 1] = sword.get(ThreadLocalRandom.current().nextInt(sword.size()));
-            } else if (armorPiece == ItemType.BOOTS) {
-                List<String> sword = new ArrayList<>(List.of("Paleos"));
-                nameSegments[nameSegments.length - 1] = sword.get(ThreadLocalRandom.current().nextInt(sword.size()));
-            }
-        } else if (type == ItemType.HEAVY) {
-            if (armorPiece == HELMET) {
-                List<String> sword = new ArrayList<>(List.of("Helmet"));
-                nameSegments[nameSegments.length - 1] = sword.get(ThreadLocalRandom.current().nextInt(sword.size()));
-            } else if (armorPiece == ItemType.CHESTPLATE) {
-                List<String> sword = new ArrayList<>(List.of("Chestplate"));
-                nameSegments[nameSegments.length - 1] = sword.get(ThreadLocalRandom.current().nextInt(sword.size()));
-            } else if (armorPiece == ItemType.LEGGINGS) {
-                List<String> sword = new ArrayList<>(List.of("Chausses", "GYATT"));
-                nameSegments[nameSegments.length - 1] = sword.get(ThreadLocalRandom.current().nextInt(sword.size()));
-            } else if (armorPiece == ItemType.BOOTS) {
-                List<String> sword = new ArrayList<>(List.of("Boots"));
-                nameSegments[nameSegments.length - 1] = sword.get(ThreadLocalRandom.current().nextInt(sword.size()));
-            }
-        }
-
-        name += "§o§fLv. " + level + "§r " + ItemRarity.getItemRarityColor(rarity);
-        for (int i = 0; i < nameSegments.length; i++) {
-            if (i == nameSegments.length - 1) {
-                name += nameSegments[i];
-            } else {
-                name += nameSegments[i] + " ";
-            }
-        }
-
-        return name;
     }
 
     public void generateArmorStats(ItemStack armor, ItemType type, ItemRarity rarity, int level) {
