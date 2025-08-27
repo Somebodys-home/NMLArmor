@@ -51,7 +51,7 @@ public class ArmorListener implements Listener {
         int slot = event.getSlot();
 
         if ((slot >= 36 && slot <= 40) && (action == InventoryAction.PLACE_ALL || action == InventoryAction.PLACE_ONE || action == InventoryAction.PLACE_SOME)) {
-            if (armorSystem.isACustomArmorPiece(armor) && !ItemSystem.isItemUsable(armor, player)) {
+            if (ItemSystem.isEquippable(armor) && !ItemSystem.isItemUsable(armor, player)) {
                 player.sendMessage("§c⚠ §nYou are too inexperienced for this item!§r§c ⚠");
                 event.setCancelled(true);
                 ItemSystem.updateUnusableItemName(armor, false);
@@ -66,7 +66,7 @@ public class ArmorListener implements Listener {
         ItemStack armor = event.getCurrentItem();
 
         if (click == ClickType.SHIFT_LEFT || click == ClickType.SHIFT_RIGHT) {
-            if (armorSystem.isACustomArmorPiece(armor) && !ItemSystem.isItemUsable(armor, player)) {
+            if (ItemSystem.isEquippable(armor) && !ItemSystem.isItemUsable(armor, player)) {
                 player.sendMessage("§c⚠ §nYou are too inexperienced for this item!§r§c ⚠");
                 event.setCancelled(true);
                 ItemSystem.updateUnusableItemName(armor, false);
@@ -80,7 +80,7 @@ public class ArmorListener implements Listener {
             Player player = event.getPlayer();
             ItemStack item = event.getItem();
 
-            if (armorSystem.isACustomArmorPiece(item) && !ItemSystem.isItemUsable(item, player)) {
+            if (ItemSystem.isEquippable(item) && !ItemSystem.isItemUsable(item, player)) {
                 ItemSystem.updateUnusableItemName(item, false);
                 event.setCancelled(true);
                 player.sendMessage("§c⚠ §nYou are too inexperienced for this item!§r§c ⚠");

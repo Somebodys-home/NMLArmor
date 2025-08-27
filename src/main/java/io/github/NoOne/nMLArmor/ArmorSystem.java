@@ -105,7 +105,7 @@ public class ArmorSystem {
     }
 
     public void addArmorStatsToPlayerStats(Player player, ItemStack armor) {
-        if (isACustomArmorPiece(armor)) {
+        if (ItemSystem.isEquippable(armor)) {
             HashMap<ItemStat, Double> statMap = ItemSystem.getAllStats(armor);
             Stats playerStats = nmlArmor.getProfileManager().getPlayerProfile(player.getUniqueId()).getStats();
 
@@ -131,7 +131,7 @@ public class ArmorSystem {
     }
 
     public void removeArmorStatsFromPlayerStats(Player player, ItemStack armor) {
-        if (isACustomArmorPiece(armor)) {
+        if (ItemSystem.isEquippable(armor)) {
             HashMap<ItemStat, Double> statMap = ItemSystem.getAllStats(armor);
             Stats stats = nmlArmor.getProfileManager().getPlayerProfile(player.getUniqueId()).getStats();
 
@@ -156,13 +156,4 @@ public class ArmorSystem {
         }
     }
 
-    public boolean isACustomArmorPiece(ItemStack item) {
-        if (item == null) {
-            return false;
-        }
-
-        return ItemSystem.getItemType(item) == HELMET || ItemSystem.getItemType(item) == CHESTPLATE ||
-                ItemSystem.getItemType(item) == LEGGINGS ||  ItemSystem.getItemType(item) == BOOTS
-                || ItemSystem.getItemType(item) == SHIELD;
-    }
 }
