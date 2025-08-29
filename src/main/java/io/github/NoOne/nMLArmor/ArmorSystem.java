@@ -16,7 +16,6 @@ import org.bukkit.persistence.PersistentDataType;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import static io.github.NoOne.nMLItems.ItemStat.*;
-import static io.github.NoOne.nMLItems.ItemType.*;
 
 public class ArmorSystem {
     private NMLArmor nmlArmor;
@@ -111,6 +110,17 @@ public class ArmorSystem {
 
             for (Map.Entry<ItemStat, Double> stat : statMap.entrySet()) {
                 switch (stat.getKey()) {
+                    case PHYSICALDAMAGE -> playerStats.add2Stat("physicaldamage", stat.getValue().intValue());
+                    case FIREDAMAGE -> playerStats.add2Stat("firedamage", stat.getValue().intValue());
+                    case COLDDAMAGE -> playerStats.add2Stat("colddamage", stat.getValue().intValue());
+                    case EARTHDAMAGE -> playerStats.add2Stat("earthdamage", stat.getValue().intValue());
+                    case LIGHTNINGDAMAGE -> playerStats.add2Stat("lightningdamage", stat.getValue().intValue());
+                    case AIRDAMAGE -> playerStats.add2Stat("airdamage", stat.getValue().intValue());
+                    case LIGHTDAMAGE -> playerStats.add2Stat("lightdamage", stat.getValue().intValue());
+                    case DARKDAMAGE -> playerStats.add2Stat("darkdamage", stat.getValue().intValue());
+                    case PUREDAMAGE -> playerStats.add2Stat("puredamage", stat.getValue().intValue());
+                    case CRITCHANCE -> playerStats.add2Stat("critchance", stat.getValue().intValue());
+                    case CRITDAMAGE -> playerStats.add2Stat("critdamage", stat.getValue().intValue());
                     case GUARD -> playerStats.add2Stat("guard", stat.getValue().intValue());
                     case EVASION -> playerStats.add2Stat("evasion", stat.getValue().intValue());
                     case DEFENSE -> playerStats.add2Stat("defense", stat.getValue().intValue());
@@ -133,22 +143,33 @@ public class ArmorSystem {
     public void removeArmorStatsFromPlayerStats(Player player, ItemStack armor) {
         if (ItemSystem.isEquippable(armor)) {
             HashMap<ItemStat, Double> statMap = ItemSystem.getAllStats(armor);
-            Stats stats = nmlArmor.getProfileManager().getPlayerProfile(player.getUniqueId()).getStats();
+            Stats playerStats = nmlArmor.getProfileManager().getPlayerProfile(player.getUniqueId()).getStats();
 
             for (Map.Entry<ItemStat, Double> stat : statMap.entrySet()) {
                 switch (stat.getKey()) {
-                    case GUARD -> stats.removeFromStat("guard", stat.getValue().intValue());
-                    case EVASION -> stats.removeFromStat("evasion", stat.getValue().intValue());
-                    case DEFENSE -> stats.removeFromStat("defense", stat.getValue().intValue());
-                    case OVERHEALTH -> stats.removeFromStat("maxoverhealth", stat.getValue());
-                    case PHYSICALRESIST -> stats.removeFromStat("physicalresist", stat.getValue().intValue());
-                    case FIRERESIST -> stats.removeFromStat("fireresist", stat.getValue().intValue());
-                    case COLDRESIST -> stats.removeFromStat("coldresist", (stat.getValue().intValue()));
-                    case EARTHRESIST -> stats.removeFromStat("earthresist", stat.getValue().intValue());
-                    case LIGHTNINGRESIST -> stats.removeFromStat("lightningresist", stat.getValue().intValue());
-                    case AIRRESIST -> stats.removeFromStat("airresist", stat.getValue().intValue());
-                    case LIGHTRESIST -> stats.removeFromStat("lightresist", stat.getValue().intValue());
-                    case DARKRESIST -> stats.removeFromStat("darkresist", stat.getValue().intValue());
+                    case PHYSICALDAMAGE -> playerStats.removeFromStat("physicaldamage", stat.getValue().intValue());
+                    case FIREDAMAGE -> playerStats.removeFromStat("firedamage", stat.getValue().intValue());
+                    case COLDDAMAGE -> playerStats.removeFromStat("colddamage", stat.getValue().intValue());
+                    case EARTHDAMAGE -> playerStats.removeFromStat("earthdamage", stat.getValue().intValue());
+                    case LIGHTNINGDAMAGE -> playerStats.removeFromStat("lightningdamage", stat.getValue().intValue());
+                    case AIRDAMAGE -> playerStats.removeFromStat("airdamage", stat.getValue().intValue());
+                    case LIGHTDAMAGE -> playerStats.removeFromStat("lightdamage", stat.getValue().intValue());
+                    case DARKDAMAGE -> playerStats.removeFromStat("darkdamage", stat.getValue().intValue());
+                    case PUREDAMAGE -> playerStats.removeFromStat("puredamage", stat.getValue().intValue());
+                    case CRITCHANCE -> playerStats.removeFromStat("critchance", stat.getValue().intValue());
+                    case CRITDAMAGE -> playerStats.removeFromStat("critdamage", stat.getValue().intValue());
+                    case GUARD -> playerStats.removeFromStat("guard", stat.getValue().intValue());
+                    case EVASION -> playerStats.removeFromStat("evasion", stat.getValue().intValue());
+                    case DEFENSE -> playerStats.removeFromStat("defense", stat.getValue().intValue());
+                    case OVERHEALTH -> playerStats.removeFromStat("maxoverhealth", stat.getValue());
+                    case PHYSICALRESIST -> playerStats.removeFromStat("physicalresist", stat.getValue().intValue());
+                    case FIRERESIST -> playerStats.removeFromStat("fireresist", stat.getValue().intValue());
+                    case COLDRESIST -> playerStats.removeFromStat("coldresist", (stat.getValue().intValue()));
+                    case EARTHRESIST -> playerStats.removeFromStat("earthresist", stat.getValue().intValue());
+                    case LIGHTNINGRESIST -> playerStats.removeFromStat("lightningresist", stat.getValue().intValue());
+                    case AIRRESIST -> playerStats.removeFromStat("airresist", stat.getValue().intValue());
+                    case LIGHTRESIST -> playerStats.removeFromStat("lightresist", stat.getValue().intValue());
+                    case DARKRESIST -> playerStats.removeFromStat("darkresist", stat.getValue().intValue());
                 }
 
                 Bukkit.getPluginManager().callEvent(new StatChangeEvent(player, ItemStat.getStatString(stat.getKey()).toLowerCase()));
