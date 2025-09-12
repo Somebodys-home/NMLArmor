@@ -18,17 +18,10 @@ public final class NMLArmor extends JavaPlugin {
     public void onEnable() {
         instance = this;
 
-        Plugin plugin = Bukkit.getPluginManager().getPlugin("NMLPlayerStats");
-        if (plugin instanceof NMLPlayerStats statsPlugin) {
-            nmlPlayerStats = statsPlugin;
-            profileManager = nmlPlayerStats.getProfileManager();
-        } else {
-            getLogger().severe("Failed to find NMLPlayerStats! Disabling...");
-            getServer().getPluginManager().disablePlugin(this);
-            return;
-        }
-
         armorSystem = new ArmorSystem(this);
+
+        nmlPlayerStats = JavaPlugin.getPlugin(NMLPlayerStats.class);
+        profileManager = nmlPlayerStats.getProfileManager();
 
         getServer().getPluginManager().registerEvents(new ArmorListener(this), this);
         getCommand("generateArmor").setExecutor(new GenerateArmorCommand(this));
