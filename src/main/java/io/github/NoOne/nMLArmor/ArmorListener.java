@@ -1,5 +1,6 @@
 package io.github.NoOne.nMLArmor;
 
+import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent;
 import io.github.NoOne.nMLItems.ItemSystem;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
@@ -14,17 +15,17 @@ import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.inventory.ItemStack;
 
 public class ArmorListener implements Listener {
-    private ArmorSystem armorSystem;
+    private ArmorStatsManager armorStatsManager;
 
     public ArmorListener(NMLArmor nmlArmor) {
-        armorSystem = nmlArmor.getArmorSystem();
+        armorStatsManager = nmlArmor.getArmorStatsManager();
     }
 
     @EventHandler
-    public void updatePlayerStatsWithArmor(ArmorChangeEvent event) {
-        armorSystem.removeArmorStatsFromPlayerStats(event.getPlayer(), event.getArmorRemoved());
-        armorSystem.addArmorStatsToPlayerStats(event.getPlayer(), event.getArmorEquipped());
-        ItemSystem.updateUnusableItemName(event.getArmorEquipped(), true);
+    public void updatePlayerStatsWithArmor(PlayerArmorChangeEvent event) {
+        armorStatsManager.removeArmorStatsFromPlayerStats(event.getPlayer(), event.getOldItem());
+        armorStatsManager.addArmorStatsToPlayerStats(event.getPlayer(), event.getNewItem());
+        ItemSystem.updateUnusableItemName(event.getOldItem(), true);
     }
 
     @EventHandler()
